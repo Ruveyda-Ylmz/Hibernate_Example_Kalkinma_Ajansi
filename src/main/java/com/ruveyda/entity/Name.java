@@ -10,7 +10,7 @@ import javax.persistence.Embeddable;
 @Data
 @Builder //Name sınıfı için özleştirme
 @NoArgsConstructor
-@AllArgsConstructor //constructor oluşturabilmek için
+@AllArgsConstructor
 @Embeddable //name in çağrıldığı yerde Name içinde ki fieldları çağrıldığı yere aktar(gömülü)
 
 public class Name {

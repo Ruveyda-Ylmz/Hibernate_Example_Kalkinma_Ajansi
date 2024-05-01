@@ -1,11 +1,13 @@
 package com.ruveyda.repository;
 
+import com.ruveyda.entity.Interest;
 import com.ruveyda.entity.User;
 import com.ruveyda.utility.HibernateUtility;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -17,11 +19,26 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class UserRepository extends MyFactoryRepository<User,Long> {
-    public UserRepository() {
+    public UserRepository() {  //Constructor related/based Dependency Injection
         super(new User());
+        this.entityManager = HibernateUtility.getSessionFactory().createEntityManager(); //bağımlılık
+    }
+
+    //NATIVE QUERY (doğal sql de yazdığımız query gibi)
+    public List<Interest> findUsersInterests(User user) {
+//        List<Interest> interestList = new ArrayList<>();
+        String sql = "SELECT i.*\n" +
+                "FROM tbl_interest i\n" +
+                "JOIN tbl_user u ON i.userid = u.id\n" +
+                "WHERE u.id = :userId";
+        TypedQuery<Interest> interestTypedQuery = (TypedQuery<Interest>) entityManager.createNativeQuery(sql, Interest.class);
+        interestTypedQuery.setParameter("userId", user.getId());
+//        interestList = interestTypedQuery.getResultList();
+        return interestTypedQuery.getResultList();
     }
 }
 
+//burada ÖZGÜN CRUD yazdık ama bu özgün bir durum değildir.bu yüzden MyFactoryRepository oluşturduk.
 //public class UserRepository implements ICrud<User,Long> {
 //
 //    private Session session;

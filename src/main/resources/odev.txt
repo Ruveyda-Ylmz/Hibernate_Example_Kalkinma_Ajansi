@@ -1,0 +1,22 @@
+Bir Hibernate projesi oluşturalım.
+Ogrenciler olsun, Ogretmenler olsun, Siniflar olsun(opsiyonel).
+
+@Column parametreleri, tablo ve kolon isimlendirmeleri size kalmış.
+
+Ogrenci {
+id,KisiselBilgiler(isim,soyisim,tcKimlik) ve doğumTarihi(DB'de long olarak tutulacak, kullanıcı normal LocalDate formatında girecek)
+}
+
+Ogretmen {
+id,KisiselBilgiler(isim,soyisim,tcKimlik), eBrans ve iseBaslamaTarihi(DB'de long olarak tutulacak, kullanıcı normal LocalDate formatında girecek)
+}
+
+Sinif {
+id,sinifAdi
+}
+
+Yukarıda belirtilen field'lar dışında gerekli gördüğünüz fieldları ekleyin.
+
+-> 1995'den sonra doğmuş olan öğrencileri getiren bir metot.
+-> Ogrencilerin isimlerini getiren bir metot.
+-> Kuracağınız ilişki yapısına göre, çoklu veri saklayacak olan entity'ler için dolaylı ilişkilendirildikleri nesneleri getiren metot.

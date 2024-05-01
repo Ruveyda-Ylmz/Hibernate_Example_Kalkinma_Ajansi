@@ -9,11 +9,12 @@
         <property name="connection.username">postgres</property>
         <property name="connection.password">root</property>
         <property name="connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.format_sql">true</property>
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hibernate.show_sql">true</property>  <!-- hibernate tarafından derlenip kontrol edilir. -->
+        <property name="hibernate.format_sql">true</property> <!-- satır satır okunaklı hale getirir. -->
+        <property name="hbm2ddl.auto">create</property> <!-- varlıı nesneleri ile gerçekleşecek işlem -->
 
-        <mapping class="com.ruveyda.entity.User"></mapping>
+        <!-- <mapping> -> hangi objenin DB leneceğini hibernate belirtir. -->
+        <mapping class="com.ruveyda.entity.User"></mapping> <!-- varlık sınıfının tanımlanması-->
         <mapping class="com.ruveyda.entity.Interest"></mapping>
 
 

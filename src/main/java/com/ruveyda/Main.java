@@ -28,6 +28,17 @@ public class Main {
 //         EntityManager entityManager = entityManagerFactory.createEntityManager();
 //         entityManager.getTransaction().begin();
 
+         /*
+        Bir varlık nesnesi DB'e kayıt için gönderilirken 2 farkı fazı olabilir.
+            1 - Transient state.
+                Geçiş durumu, henüz somutlaşmamış, nesnel bir hale gelmemiş haline denir.
+            2 - Persistent state.
+                Kalıcı durum, artık somutlaşmış, nesnel bir hale gelmiş.
+        Bu cascade yapılarını yönetebilmek için önemli bir bilgidir.
+        User olmadan Interest olur mu? -> Olmaz
+        Interest olmadan User olur mu? -> Olur
+        -> Cascade yapısında kapsayıcı olan User'dır.
+     */
         UserRepository userRepository = new UserRepository();
         InterestRepository interestRepository = new InterestRepository();
 
@@ -40,21 +51,28 @@ public class Main {
                 // .interests(List.of("boxing","hiking","reading"))
                 .build();
         userRepository.save(user);
-        Interest interest1 = Interest.builder().content("kitap okumak").user(user).build();
-        Interest interest2 = Interest.builder().content("Oyun oynamak").user(user).build();
 
+        //interest de many to one yi kapattım.
+//        Interest interest1 = Interest.builder().content("kitap okumak").user(user).build();
+//        Interest interest2 = Interest.builder().content("Oyun oynamak").user(user).build();
 
-        //1.yöntemin devamı
-//        session.save(user);
-//        transaction.commit();
-//        session.close();
+        Interest interest1 = Interest.builder().content("kitap okumak").userId(user.getId()).build();
+        Interest interest2 = Interest.builder().content("Oyun oynamak").userId(user.getId()).build();
 
+        //geçerli ilgi alanıdır kaydet
         interestRepository.save(interest1);
         interestRepository.save(interest2);
-        user.getInterests().addAll(List.of(interest1,interest2));
+//        user.getInterests().addAll(List.of(interest1,interest2));
+//        userRepository.update(user); //bunlar benim ilgi alanlarım diyip kendi üstüme aldığım yer
+
+      //  user.getInterests().add(interestRepository.save(Interest.builder().content("asdf").user(user).build())); //user da  @OneToMany  yaptığımızda alttaki kodu kapatıp bu kod açık kaldığında çapraz tablo oluşmakta
+       // user.getInterests().add(Interest.builder().content("asdf").user(user).build());
         userRepository.update(user);
-        user.getInterests().add(Interest.builder().content("asdf").user(user).build());
-        userRepository.update(user);
+
+
+        System.out.println(userRepository.findUsersInterests(user));
+
+
         //user = userRepository.findById(1L).get();
         //SELECT * FROM tbl_interests where user_id = ?; ? = user.getId()
 
@@ -68,6 +86,13 @@ public class Main {
 //                .build();
 //
 //        userRepository.saveAll(List.of(user,user2));
+
+
+        //1.yöntemin devamı
+//        session.save(user);
+//        transaction.commit();
+//        session.close();
+
 
         //2.yöntemin devamı
 //        entityManager.persist(user);

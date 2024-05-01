@@ -15,27 +15,37 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+//burada ki amaç diğer sınıfların repository'lerini alıp,
+// crud methodlarını içeride yazmak yerine bütün sınıfların kalıtım(extend) alacağı parent sınıf oluşturuduk.
+/*bu sınıf MyFactoryRepository yinr içerisine bir entity ve id alıyo <T,ID> ,
+  ICrud dan da implement alıyo yani crud methodları buray gelecek*/
 public class MyFactoryRepository <T,ID> implements ICrud<T,ID>{
     private Session session;
-    private Transaction transaction;
+    private Transaction transaction; //dosya aktarım veri işlemleri için
+
+    //EntityManager ve CriteriaBuilder de custom sorgularımı yönetirken ve entity işlmelri için kullanılacak.
     EntityManager entityManager;
     CriteriaBuilder criteriaBuilder;
-    T t;
-    public MyFactoryRepository(T entity){
+    T t; //T = entity
+
+    //MyFactoryRepository in bir nesneis oluşturulduğunda içeriye (T entity)alsın demek.
+    //yani User verirsem User olarak çalışır,Interest verirsem Interest ı-olarak çalışsın.
+    public MyFactoryRepository(T entity){ //burada entity parametredir.
         this.t = entity;
         this.entityManager = HibernateUtility.getSessionFactory().createEntityManager();
-        this.criteriaBuilder = entityManager.getCriteriaBuilder();
+        this.criteriaBuilder = entityManager.getCriteriaBuilder(); //sorgu kriterleri
     }
 
-    private void openSession(){
+    private void openSession(){ //veri göndermek için sessionu/transaction'u açmak lazım
         session = HibernateUtility.getSessionFactory().openSession();
         transaction = session.beginTransaction();
     }
-    private void closeSession(){
+    private void closeSession(){ //açılan sessionu/transaction'u kapatmak için
         transaction.commit();
         session.close();
     }
 
+    //crud işlemlerinde save,update.. gibi işlemlerde entity genelde geri gönülür.
     @Override
     public T save(T entity) {
         openSession();
@@ -60,10 +70,10 @@ public class MyFactoryRepository <T,ID> implements ICrud<T,ID>{
     }
 
     @Override
-    public void deleteByID(ID id) {
+    public void deleteByID(ID id) { //burada kriterlerin hangi tablo üzerinden oluşacağını belirliyoruz.
         CriteriaQuery<T> criteria = (CriteriaQuery<T>) criteriaBuilder.createQuery(t.getClass());
-        Root<T> root = (Root<T>) criteria.from(t.getClass());
-        criteria.select(root);
+        Root<T> root = (Root<T>) criteria.from(t.getClass()); //kök dizini hangi source entity ile eşleme işlemini gerçekleştirmeyi belirtir
+        criteria.select(root); //root ve criteria yı birbirine bağlar
         criteria.where(criteriaBuilder.equal(root.get("id"),id));
         T result = entityManager.createQuery(criteria).getSingleResult();
         openSession();

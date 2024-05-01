@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+//varlık nesnem için belirttiğimiz iki durum var
+//1-varlık nesnesinin hangi sınıfdan türetildiği (T)
+//2-içerisinde tuttuğu id ,(crud işlemleri ya entity le çalışır yada id ile çalışır)
 public interface ICrud <T,ID> { //generic
     T save(T entity); //
     T update(T entity);
